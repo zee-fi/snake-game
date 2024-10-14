@@ -7,6 +7,8 @@ h1 {
 }
 
 #board {
+    margin: 100px;
+    padding: 0;
     border: 5px solid white;
     height: 70vh;
     width: 70vw;
@@ -14,7 +16,19 @@ h1 {
 }
 
 #player {
+    padding: 0;
+    border: 0;
+    margin: 0;
     background-color: darkcyan;
+    position: absolute;
+}
+
+
+.food {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    background-color: darkred;
     position: absolute;
 }
 
