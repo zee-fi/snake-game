@@ -7,11 +7,12 @@ h1 {
 }
 
 #board {
-    margin: 100px;
+    margin-top: 50px;
+    margin-left: 150px;
     padding: 0;
     border: 5px solid white;
-    height: 70vh;
-    width: 70vw;
+    height: 630px;
+    width: 630px;
     position: relative;
 }
 
