@@ -1,94 +1,103 @@
+let lastRender = 0;
 
 
 class Player {
     constructor() {
-        this.width = 15;
-        this.height = 15;
-        this.positionX = (630 - this.width) / 2;
-        this.positionY = (630 - this.height) / 2;
-        this.domElementPlayer = null;
+        this.position = [ {x:12, y:12}]
+        this.newSize = 0;
+        this.playerElement = [];
         this.board = null;
+        this.speed = 3;
 
         this.createPlayerElement();
     }
 
     createPlayerElement() {
-        this.domElementPlayer = document.createElement("div");
+        this.position.forEach((elm) => {
+            const playerElement = document.createElement('div');
 
-        this.domElementPlayer.id = "player";
-        this.domElementPlayer.style.width = this.width + "px";
-        this.domElementPlayer.style.height = this.height + "px";
-        this.domElementPlayer.style.left = this.positionX + "px";
-        this.domElementPlayer.style.bottom = this.positionY + "px";
+            playerElement.id = "player";
+            playerElement.style.gridColumnStart = elm.x;
+            playerElement.style.gridRowStart = elm.y;
+            
+            this.board = document.getElementById("board");
+            this.board.appendChild(playerElement);
+        })
+        }
 
-        this.board = document.getElementById("board");
-        this.board.appendChild(this.domElementPlayer);
-    }
-
-    moveRight() {
-        const boardWidth = this.board.offsetWidth;
-
-        if (player.positionX + this.width * 2 < boardWidth) {
-            this.positionX = this.positionX + 5;
-            this.domElementPlayer.style.left = this.positionX + "px";
-        }
-        else {
-            return
-            console.log("game over");
-        }
-    }
-    moveLeft() {
-        this.positionX = this.positionX - 5;
-        if (player.positionX > 0) {
-            this.positionX = this.positionX - 5;
-            this.domElementPlayer.style.left = this.positionX + "px"
-        }
-        else {    
-            console.log("game over");
-            return
-        }
+    snakeGrowth (amount) {
+        this.newSize += amount;
     }
     
-    moveUp() {
-        const boardHeight = this.board.offsetHeight;
-
-        if (player.positionY + this.height * 2 < boardHeight) {
-            this.positionY = this.positionY + 5;
-            this.domElementPlayer.style.bottom = this.positionY + "px";
+    addGrowth () {
+        for (let i=0; i<this.newSnakeSize; i++) {
+            this.player.push({...this.player[this.player.length -1]})
         }
-        else {
-            return
-            console.log("game over");
+        this.newSize = 0;
+    }
+
+
+    movePlayer () {
+        for (let i=position.length -2; i>=0; i--) {
+            position[i + 1] = { x: this.position[i].x, y: this.position[i.y]};
         }
     }
-    moveDown() {
-        if (player.positionY > 0) { 
-            this.positionY = this.positionY - 5;
-            this.domElementPlayer.style.bottom = this.positionY + "px";
-        } else {
-            return
-            console.log("game over")
-        }
+
+
+    checkCollision() {
+        foodArr.forEach((foodInstance) => {
+            if (
+                this.positionX < foodInstance.positionX + foodInstance.width &&
+                this.positionX + this.width > foodInstance.positionX &&
+                this.positionY < foodInstance.positionY + foodInstance.height &&
+                this.positionY + this.height > foodInstance.positionY
+            ) {
+                foodArr[0].domElementFood.remove();  
+                foodArr.shift(); 
+                this.width = this.width + 15;
+                this.domElementPlayer.style.width = this.width + "px";
+                }
+            else if (
+                this.positionX < foodInstance.positionX + foodInstance.width &&
+                this.positionX + this.width > foodInstance.positionX &&
+                this.positionY < foodInstance.positionY + foodInstance.height &&
+                this.positionY + this.height > foodInstance.positionY 
+            ) {
+                foodArr[0].domElementFood.remove();  
+                foodArr.shift(); 
+                this.height = this.height + 15;
+                this.domElementPlayer.style.height = this.height + "px";
+                }
+        })
     }
 }
 
 const player = new Player();
 
-
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowLeft') {
         player.moveLeft();
     }
-    else if (e.code === 'ArrowRight') {
+})
+
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'ArrowRight') {
         player.moveRight();
     }
-    else if (e.code === 'ArrowUp') {
+})
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'ArrowUp') {
         player.moveUp();
     }
-    else if (e.code === 'ArrowDown') {
+})
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'ArrowDown') {
         player.moveDown();
     }
 })
+
 
 
 
@@ -121,8 +130,8 @@ class Food {
 }
 
 
-
 const foodArr = [];
+
 
 function createFoodAtRandom() {
 
@@ -132,9 +141,12 @@ function createFoodAtRandom() {
 
     // remove it, after a delay
     setTimeout(() => {
-        foodArr[0].domElementFood.remove(); // remove from the UI
-        foodArr.shift(); // remove from the array
-    }, 10000);
+        const foodElement = foodArr.indexOf(food);
+        if (foodElement > -1){
+            foodArr[0].domElementFood.remove(); // remove from the UI
+            foodArr.shift(); // remove from the array
+        }
+    }, 10000)
 
     // keep generating new foods
     let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
@@ -144,3 +156,20 @@ function createFoodAtRandom() {
 
 
 createFoodAtRandom();
+
+
+function gameLoop (currentTime){
+    window.requestAnimationFrame(gameLoop);
+    const sinceLastRender = (currentTime - lastRender) / 1000;
+    if (sinceLastRender < 1 / player.speed) return;
+
+    lastRender = currentTime; 
+}
+
+window.requestAnimationFrame(gameLoop);
+
+
+function gameOver() {
+    over = checkCollision 
+}
+
