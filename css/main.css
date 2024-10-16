@@ -1,5 +1,11 @@
 body {
     background-color: darkblue;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
 }
 
 h1 {
@@ -7,29 +13,22 @@ h1 {
 }
 
 #board {
-    margin-top: 50px;
-    margin-left: 150px;
-    padding: 0;
-    border: 5px solid white;
-    height: 630px;
-    width: 630px;
-    position: relative;
+    width: 100vmin;
+    height: 100vmin;
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    grid-template-rows: repeat(24, 1fr);
+    background-color: white;
+    border: 5px solid darkred;
 }
 
 #player {
-    padding: 0;
-    border: 0;
-    margin: 0;
     background-color: darkcyan;
-    position: absolute;
+    border: .2vmin solid black
 }
 
-
 .food {
-    padding: 0;
-    border: 0;
-    margin: 0;
     background-color: darkred;
-    position: absolute;
+    border: .2 solid black
 }
 
