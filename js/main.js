@@ -3,11 +3,13 @@ let lastRender = 0;
 
 class Player {
     constructor() {
-        this.position = [ {x:12, y:12}]
-        this.newSize = 0;
-        this.playerElement = [];
-        this.board = null;
         this.speed = 3;
+        this.position = [ {x:12, y:12}]
+        this.oldPosition = {x:0, y:0};
+        this.newPosition = {x:0, y:0};
+        this.newSize = 0;
+        this.board = null;
+        this.playerElement = [];
 
         this.createPlayerElement();
     }
@@ -30,21 +32,43 @@ class Player {
     }
     
     addGrowth () {
-        for (let i=0; i<this.newSnakeSize; i++) {
-            this.player.push({...this.player[this.player.length -1]})
+        const oldPosition = this.position[this.position.length -1]
+        for (let i=0; i<this.newSize; i++) {
+            this.position.push({x: oldPosition.x, y: oldPosition.y})
         }
         this.newSize = 0;
     }
 
-
     movePlayer () {
-        for (let i=position.length -2; i>=0; i--) {
+        for (let i=this.position.length -2; i>=0; i--) {
             position[i + 1] = { x: this.position[i].x, y: this.position[i.y]};
         }
+        this.addGrowth();
+        this.updatePosition ();
+        
+        this.position[0].x += this.newPosition.x;
+        this.position[0].y += this.newPosition.y;
     }
 
+    moveLeft() {
+        this.newPosition = {x:-1, y:0};
+    }
+    moveRight() {
+        this.newPosition = {x:1, y:0};
+    }
+    moveUp() {
+        this.newPosition = {x:0, y:-1};
+    }
+    moveDown() {
+        this.newPosition = {x:0, y:1};
+    }
 
-    checkCollision() {
+    updatePosition () {
+        this.oldPosition = this.newPosition;
+        return this.newPosition;
+    }
+
+   /* checkCollision() {
         foodArr.forEach((foodInstance) => {
             if (
                 this.positionX < foodInstance.positionX + foodInstance.width &&
@@ -69,7 +93,7 @@ class Player {
                 this.domElementPlayer.style.height = this.height + "px";
                 }
         })
-    }
+    }*/
 }
 
 const player = new Player();
@@ -79,7 +103,6 @@ document.addEventListener('keydown', (e) => {
         player.moveLeft();
     }
 })
-
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowRight') {
@@ -92,6 +115,7 @@ document.addEventListener('keydown', (e) => {
         player.moveUp();
     }
 })
+
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowDown') {
         player.moveDown();
@@ -164,12 +188,12 @@ function gameLoop (currentTime){
     if (sinceLastRender < 1 / player.speed) return;
 
     lastRender = currentTime; 
+
+    player.movePlayer();
+    player.createPlayerElement();
 }
 
 window.requestAnimationFrame(gameLoop);
 
 
-function gameOver() {
-    over = checkCollision 
-}
 
