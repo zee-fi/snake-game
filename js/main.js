@@ -1,31 +1,31 @@
-let lastRender = 0;
+
 
 
 class Player {
     constructor() {
         this.speed = 3;
-        this.position = [ {x:12, y:12}]
+        this.position = [{x:12, y:12}]
         this.oldPosition = {x:0, y:0};
         this.newPosition = {x:0, y:0};
         this.newSize = 0;
         this.board = null;
         this.playerElement = [];
+        this.playerGrowth = [{x: this.position.x, y: this.position.y}];
 
         this.createPlayerElement();
     }
 
     createPlayerElement() {
-        this.position.forEach((elm) => {
-            const playerElement = document.createElement('div');
+            const playerElement = document.createElement("div");
 
             playerElement.id = "player";
-            playerElement.style.gridColumnStart = elm.x;
-            playerElement.style.gridRowStart = elm.y;
+            playerElement.style.gridColumnStart = this.position[0].x;
+            playerElement.style.gridRowStart = this.position[0].y;
             
             this.board = document.getElementById("board");
             this.board.appendChild(playerElement);
-        })
         }
+        
 
     snakeGrowth (amount) {
         this.newSize += amount;
@@ -41,27 +41,31 @@ class Player {
 
     movePlayer () {
         for (let i=this.position.length -2; i>=0; i--) {
-            position[i + 1] = { x: this.position[i].x, y: this.position[i.y]};
+            this.position[i + 1] = { x: this.position[i].x, y: this.position[i].y};
         }
         this.addGrowth();
-        this.updatePosition ();
-        
+        this.updatePosition();
+
+        const playerElement = document.getElementById("player");
+        playerElement.style.gridColumnStart = this.position[0].x;
+        playerElement.style.gridRowStart = this.position[0].y;
+
         this.position[0].x += this.newPosition.x;
         this.position[0].y += this.newPosition.y;
     }
 
     moveLeft() {
-        this.newPosition = {x:-1, y:0};
+            this.newPosition = {x:-1, y:0};
     }
     moveRight() {
-        this.newPosition = {x:1, y:0};
+            this.newPosition = {x:1, y:0};
     }
     moveUp() {
-        this.newPosition = {x:0, y:-1};
+            this.newPosition = {x:0, y:-1};
     }
     moveDown() {
-        this.newPosition = {x:0, y:1};
-    }
+            this.newPosition = {x:0, y:1};
+            }
 
     updatePosition () {
         this.oldPosition = this.newPosition;
@@ -97,6 +101,7 @@ class Player {
 }
 
 const player = new Player();
+
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowLeft') {
@@ -181,6 +186,7 @@ function createFoodAtRandom() {
 
 createFoodAtRandom();
 
+let lastRender = 0;
 
 function gameLoop (currentTime){
     window.requestAnimationFrame(gameLoop);
@@ -190,7 +196,6 @@ function gameLoop (currentTime){
     lastRender = currentTime; 
 
     player.movePlayer();
-    player.createPlayerElement();
 }
 
 window.requestAnimationFrame(gameLoop);
