@@ -26,6 +26,7 @@ class Player {
         this.board.appendChild(playerElement);
     }
 
+
     snakeGrowth(amount) {
         this.newSize += amount;
     }
@@ -44,7 +45,6 @@ class Player {
         }
         this.addGrowth();
         this.updatePosition();
-        this.checkCollision();
 
         const playerElement = document.getElementById("player");
         playerElement.style.gridColumnStart = this.position[0].x;
@@ -72,27 +72,32 @@ class Player {
         return this.newPosition;
     }
 
-    checkCollision() {
-        const collision = this.position.some((element) => {
-            return this.equalPositions(element, foodArr[0].position);
-        })
-        if (collision) {
-            this.playerEats();
-            return true;
-        }
-    }
-
-    equalPositions(position1, position2) {
-        return position1.x === position2.x || position1.y === position2.y;
-    }
-
-    playerEats() {
-         foodArr.forEach(() => {
+    /* checkCollision() {
+         foodArr.forEach((foodInstance) => {
+             if (
+                 this.positionX < foodInstance.positionX + foodInstance.width &&
+                 this.positionX + this.width > foodInstance.positionX &&
+                 this.positionY < foodInstance.positionY + foodInstance.height &&
+                 this.positionY + this.height > foodInstance.positionY
+             ) {
                  foodArr[0].domElementFood.remove();  
                  foodArr.shift(); 
-                 this.snakeGrowth(1);
-                 })
-     }
+                 this.width = this.width + 15;
+                 this.domElementPlayer.style.width = this.width + "px";
+                 }
+             else if (
+                 this.positionX < foodInstance.positionX + foodInstance.width &&
+                 this.positionX + this.width > foodInstance.positionX &&
+                 this.positionY < foodInstance.positionY + foodInstance.height &&
+                 this.positionY + this.height > foodInstance.positionY 
+             ) {
+                 foodArr[0].domElementFood.remove();  
+                 foodArr.shift(); 
+                 this.height = this.height + 15;
+                 this.domElementPlayer.style.height = this.height + "px";
+                 }
+         })
+     }*/
 }
 
 const player = new Player();
@@ -125,6 +130,7 @@ document.addEventListener('keydown', (e) => {
 
 
 
+
 class Food {
     constructor() {
         this.grid = 24;
@@ -148,10 +154,6 @@ class Food {
 
         this.board = document.getElementById("board");
         this.board.appendChild(this.domElementFood);
-    }
-
-    equalPositions(position1, position2) {
-        return position1.x === position2.x || position1.y === position2.y;
     }
 
 }
@@ -180,9 +182,9 @@ function createFoodAtRandom() {
     setTimeout(createFoodAtRandom, randomDelay);
 }
 
+
+
 createFoodAtRandom();
-
-
 
 let lastRender = 0;
 
