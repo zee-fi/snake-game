@@ -1,15 +1,10 @@
 const grid = 24;
 const board = document.getElementById("board");
+const score = document.getElementById("score");
+const startButton = document.getElementById("btn");
 let gameOver = false;
 let pointsCounter = 0;
 let livesCounter = 5;
-
-function gameEnd() {
-    if (player.position[0].x < 1 || player.position[0].x > grid ||
-        player.position[0].y < 1 || player.position[0].y > grid
-    )
-    return gameOver = true;
-}
 
 
 ////////////////////////////////////PLAYER//////////////////////////////////
@@ -67,7 +62,8 @@ class Player {
         if (pointsElementIndex !== -1) {
             pointsArr[pointsElementIndex].domElementPoints.remove();
             pointsArr.splice(pointsElementIndex, 1);
-            pointsCounter++;
+            pointsCounter = pointsCounter + 5;
+            updatePointsDisplay();
         }
 
         const obstacleElementIndex = obstacleArr.findIndex((element) => {
@@ -78,6 +74,7 @@ class Player {
             obstacleArr[obstacleElementIndex].domElementObstacle.remove();
             obstacleArr.splice(obstacleElementIndex, 1);
             livesCounter--;
+            updateLivesDisplay();
         }
     }
 }
@@ -88,24 +85,28 @@ const player = new Player();
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowLeft') {
         player.newPosition = { x: -1, y: 0 };
+        removeStartButton();
     }
 })
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowRight') {
         player.newPosition = { x: 1, y: 0 };
+        removeStartButton();
     }
 })
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowUp') {
         player.newPosition = { x: 0, y: -1 };
+        removeStartButton();
     }
 })
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowDown') {
         player.newPosition = { x: 0, y: 1 };
+        removeStartButton();
     }
 })
 
@@ -190,6 +191,17 @@ function createPointsAtRandom() {
 
 createPointsAtRandom();
 
+const pointsDisplay = document.createElement("div");
+pointsDisplay.id = "pointsDisplay";
+pointsDisplay.innerHTML = `
+<p>Points Collected: ${pointsCounter}</p>
+`
+
+score.appendChild(pointsDisplay);
+
+function updatePointsDisplay() {
+    pointsDisplay.innerHTML = `<p>Points Collected: ${pointsCounter}</p>`;
+}
 
 
 ////////////////////////////////////OBSTACLE//////////////////////////////////
@@ -236,13 +248,50 @@ function outOfLives() {
     }
 }
 
-
-
 createObstacleAtRandom();
 
 
-////////////////////////////////////OBSTACLE//////////////////////////////////
+const livesDisplay = document.createElement("div");
+livesDisplay.id = "livesDisplay";
+livesDisplay.innerHTML = `
+<p>Lives Remaining: ${livesCounter}</p>
+`
 
+score.appendChild(livesDisplay);
+
+function updateLivesDisplay() {
+    livesDisplay.innerHTML = `<p>Lives Remaining: ${livesCounter}</p>`;
+}
+
+
+////////////////////////////////////GAME//////////////////////////////////
+
+
+/*function restart(){
+    
+    
+}
+
+function displayEndView () {
+
+}
+
+const endView = document.createElement("div");
+endView.id = "endView";
+endView.innerHTML= `
+<p class="end">Your score was: ${pointsCounter}</p>
+`*/
+
+function removeStartButton() {
+    startButton.remove();
+}
+
+function gameEnd() {
+    if (player.position[0].x < 1 || player.position[0].x > grid ||
+        player.position[0].y < 1 || player.position[0].y > grid
+    )
+    return gameOver = true;
+}
 
 let lastRender = 0;
 
