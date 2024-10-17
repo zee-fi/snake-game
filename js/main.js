@@ -12,7 +12,7 @@ function gameEnd() {
 
 class Player {
     constructor() {
-        this.speed = 3;
+        this.speed = 2;
         this.position = [{ x: 12, y: 12 }]
         this.oldPosition = { x: 0, y: 0 };
         this.newPosition = { x: 0, y: 0 };
@@ -53,6 +53,7 @@ class Player {
         if (foodElementIndex !== -1) {
             foodArr[foodElementIndex].domElementFood.remove();
             foodArr.splice(foodElementIndex, 1);
+            this.speed++;
         }
     }
 }
@@ -87,9 +88,9 @@ document.addEventListener('keydown', (e) => {
 
 class Food {
     constructor() {
-        this.position = [{ x: 12, y: 12 }]
+        this.position = [{ x: Math.floor(Math.random() * (grid -1) +1), y: Math.floor(Math.random() * (grid -1) +1) }]
 
-        this.createFoodElement();
+        this.createFoodElement(); 
     }
 
     createFoodElement() {
@@ -102,12 +103,6 @@ class Food {
         this.board = document.getElementById("board");
         this.board.appendChild(this.domElementFood);
     }
-
-    setRandomLocation () {
-        this.position[0].x = Math.floor(Math.random() * grid);
-        this.position[0].y = Math.floor(Math.random() * grid);
-    }
-
 }
 
 
@@ -120,16 +115,6 @@ function createFoodAtRandom() {
     // generate new food
     const food = new Food();
     foodArr.push(food);
-    
-
-    // remove it, after a delay
-    setTimeout(() => {
-        const foodElement = foodArr.indexOf(food);
-        if (foodElement > -1) {
-            foodArr[0].domElementFood.remove(); // remove from the UI
-            foodArr.shift(); // remove from the array
-        }
-    }, 10000)
 
     // keep generating new foods
     let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
