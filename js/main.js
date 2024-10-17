@@ -1,6 +1,8 @@
 const grid = 24;
 const board = document.getElementById("board");
 let gameOver = false;
+let pointsCounter = 0;
+let livesCounter = 5;
 
 function gameEnd() {
     if (player.position[0].x < 1 || player.position[0].x > grid ||
@@ -9,6 +11,8 @@ function gameEnd() {
     return gameOver = true;
 }
 
+
+////////////////////////////////////PLAYER//////////////////////////////////
 
 class Player {
     constructor() {
@@ -55,6 +59,26 @@ class Player {
             foodArr.splice(foodElementIndex, 1);
             this.speed++;
         }
+
+        const pointsElementIndex = pointsArr.findIndex((element) => {
+            return  element.position[0].x === this.position[0].x &&
+                    element.position[0].y === this.position[0].y; 
+        });
+        if (pointsElementIndex !== -1) {
+            pointsArr[pointsElementIndex].domElementPoints.remove();
+            pointsArr.splice(pointsElementIndex, 1);
+            pointsCounter++;
+        }
+
+        const obstacleElementIndex = obstacleArr.findIndex((element) => {
+            return  element.position[0].x === this.position[0].x &&
+                    element.position[0].y === this.position[0].y; 
+        });
+        if (obstacleElementIndex !== -1) {
+            obstacleArr[obstacleElementIndex].domElementObstacle.remove();
+            obstacleArr.splice(obstacleElementIndex, 1);
+            livesCounter--;
+        }
     }
 }
 
@@ -84,6 +108,9 @@ document.addEventListener('keydown', (e) => {
         player.newPosition = { x: 0, y: 1 };
     }
 })
+
+
+////////////////////////////////////FOOD//////////////////////////////////
 
 
 class Food {
@@ -121,10 +148,100 @@ function createFoodAtRandom() {
     setTimeout(createFoodAtRandom, randomDelay);
 }
 
-
-
 createFoodAtRandom();
 
+
+////////////////////////////////////POINTS//////////////////////////////////
+
+
+class Points {
+    constructor() {
+        this.position = [{ x: Math.floor(Math.random() * (grid -1) +1), y: Math.floor(Math.random() * (grid -1) +1) }]
+
+        this.createPointsElement(); 
+    }
+
+    createPointsElement() {
+        this.domElementPoints = document.createElement("div");
+
+        this.domElementPoints.className = "points";
+        this.domElementPoints.style.gridColumnStart = this.position[0].x;
+        this.domElementPoints.style.gridRowStart = this.position[0].y;
+
+        this.board = document.getElementById("board");
+        this.board.appendChild(this.domElementPoints);
+    }
+}
+
+const pointsArr = [];
+const pointsIndex = [];
+
+function createPointsAtRandom() {
+
+    // generate new food
+    const points = new Points();
+    pointsArr.push(points);
+
+    // keep generating new foods
+    let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
+    setTimeout(createPointsAtRandom, randomDelay);
+}
+
+
+createPointsAtRandom();
+
+
+
+////////////////////////////////////OBSTACLE//////////////////////////////////
+
+class Obstacle {
+    constructor() {
+        this.position = [{ x: Math.floor(Math.random() * (grid -1) +1), y: Math.floor(Math.random() * (grid -1) +1) }]
+
+        this.createObstacleElement(); 
+    }
+
+    createObstacleElement() {
+        this.domElementObstacle = document.createElement("div");
+
+        this.domElementObstacle.className = "obstacle";
+        this.domElementObstacle.style.gridColumnStart = this.position[0].x;
+        this.domElementObstacle.style.gridRowStart = this.position[0].y;
+
+        this.board = document.getElementById("board");
+        this.board.appendChild(this.domElementObstacle);
+    }
+}
+
+
+const obstacleArr = [];
+const obstacleIndex = [];
+
+
+function createObstacleAtRandom() {
+
+    // generate new food
+    const obstacle = new Obstacle();
+    obstacleArr.push(obstacle);
+
+    // keep generating new foods
+    let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
+    setTimeout(createObstacleAtRandom, randomDelay);
+}
+
+
+function outOfLives() {
+    if (livesCounter === 0) {
+    return gameOver = true;
+    }
+}
+
+
+
+createObstacleAtRandom();
+
+
+////////////////////////////////////OBSTACLE//////////////////////////////////
 
 
 let lastRender = 0;
@@ -145,6 +262,7 @@ function gameLoop(currentTime) {
 
     player.movePlayer();
     gameEnd();
+    outOfLives();
 }
 
 window.requestAnimationFrame(gameLoop);
