@@ -16,10 +16,8 @@ class Player {
         this.position = [{ x: 12, y: 12 }]
         this.oldPosition = { x: 0, y: 0 };
         this.newPosition = { x: 0, y: 0 };
-        this.newSize = 0;
         this.playerElement = [];
-       // this.playerGrowth = [{ x: this.position.x, y: this.position.y }];
-
+       
         this.createPlayerElement();
     }
 
@@ -42,29 +40,21 @@ class Player {
 
         this.playerElement.style.gridColumnStart = this.position[0].x;
         this.playerElement.style.gridRowStart = this.position[0].y;
+
+        this.checkCollision();
         }
 
-
-    /*checkCollision() {
-    const collision = this.position.some((element) => {
-        return this.equalPositions(element, foodArr[0].position);
-    })
-    if (collision) {
-        return true;
+    
+    checkCollision() {
+        const foodElementIndex = foodArr.findIndex((element) => {
+            return  element.position[0].x === this.position[0].x &&
+                    element.position[0].y === this.position[0].y; 
+        });
+        if (foodElementIndex !== -1) {
+            foodArr[foodElementIndex].domElementFood.remove();
+            foodArr.splice(foodElementIndex, 1);
+        }
     }
-    }
-
-    equalPositions(position1, position2) {
-        return position1.x === position2.x || position1.y === position2.y;
-    }
-
-    playerEats() {
-         foodArr.forEach(() => {
-                 foodArr[0].domElementFood.remove();  
-                 foodArr.shift(); 
-                 this.snakeGrowth(1);
-                 })
-     }*/
 }
 
 const player = new Player();
@@ -94,15 +84,11 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
-function direction() {
-    player.oldPosition = player.newPosition
-    return player.newPosition
-}
 
 class Food {
     constructor() {
         this.position = [{ x: 12, y: 12 }]
-        
+
         this.createFoodElement();
     }
 
@@ -110,7 +96,7 @@ class Food {
         this.domElementFood = document.createElement("div");
 
         this.domElementFood.className = "food";
-        this.domElementFood.style.gridColumnStartt = this.position[0].x;
+        this.domElementFood.style.gridColumnStart = this.position[0].x;
         this.domElementFood.style.gridRowStart = this.position[0].y;
 
         this.board = document.getElementById("board");
@@ -126,6 +112,7 @@ class Food {
 
 
 const foodArr = [];
+const foodIndex = [];
 
 
 function createFoodAtRandom() {
@@ -133,6 +120,7 @@ function createFoodAtRandom() {
     // generate new food
     const food = new Food();
     foodArr.push(food);
+    
 
     // remove it, after a delay
     setTimeout(() => {
@@ -171,6 +159,7 @@ function gameLoop(currentTime) {
     lastRender = currentTime;
 
     player.movePlayer();
+    gameEnd();
 }
 
 window.requestAnimationFrame(gameLoop);
