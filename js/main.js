@@ -18,7 +18,7 @@ class Player {
         this.newPosition = { x: 0, y: 0 };
         this.newSize = 0;
         this.playerElement = [];
-        this.playerGrowth = [{ x: this.position.x, y: this.position.y }];
+       // this.playerGrowth = [{ x: this.position.x, y: this.position.y }];
 
         this.createPlayerElement();
     }
@@ -32,31 +32,20 @@ class Player {
 
         this.board = document.getElementById("board");
         this.board.appendChild(playerElement);
+
+        this.playerElement = playerElement;
     }
 
     movePlayer() {
-    for (let i = this.position.length - 2; i >= 0; i--) {
-        this.position[i + 1] = { x: this.position[i].x, y: this.position[i].y };
-    }
-    this.position[0].x += this.newPosition.x;
-    this.position[0].y += this.newPosition.y;
-    }
+        this.position[0].x += this.newPosition.x;
+        this.position[0].y += this.newPosition.y;
 
-    moveLeft() {
-    this.newPosition = { x: -1, y: 0 };
+        this.playerElement.style.gridColumnStart = this.position[0].x;
+        this.playerElement.style.gridRowStart = this.position[0].y;
         }
-    moveRight() {
-    this.newPosition = { x: 1, y: 0 };
-    }
-    moveUp() {
-    this.newPosition = { x: 0, y: -1 };
-    }
-    moveDown() {
-    this.newPosition = { x: 0, y: 1 };
-    }
 
 
-    checkCollision() {
+    /*checkCollision() {
     const collision = this.position.some((element) => {
         return this.equalPositions(element, foodArr[0].position);
     })
@@ -75,7 +64,7 @@ class Player {
                  foodArr.shift(); 
                  this.snakeGrowth(1);
                  })
-     }
+     }*/
 }
 
 const player = new Player();
@@ -83,36 +72,37 @@ const player = new Player();
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowLeft') {
-        player.moveLeft();
+        player.newPosition = { x: -1, y: 0 };
     }
 })
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowRight') {
-        player.moveRight();
+        player.newPosition = { x: 1, y: 0 };
     }
 })
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowUp') {
-        player.moveUp();
+        player.newPosition = { x: 0, y: -1 };
     }
 })
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowDown') {
-        player.moveDown();
+        player.newPosition = { x: 0, y: 1 };
     }
 })
 
-
-
-
+function direction() {
+    player.oldPosition = player.newPosition
+    return player.newPosition
+}
 
 class Food {
     constructor() {
         this.position = [{ x: 12, y: 12 }]
-
+        
         this.createFoodElement();
     }
 
