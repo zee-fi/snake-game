@@ -5,6 +5,7 @@ const startButton = document.getElementById("btn");
 let gameOver = false;
 let pointsCounter = 0;
 let livesCounter = 5;
+let speedCounter = this.speed;
 
 
 ////////////////////////////////////PLAYER//////////////////////////////////
@@ -15,8 +16,10 @@ class Player {
         this.position = [{ x: 12, y: 12 }]
         this.oldPosition = { x: 0, y: 0 };
         this.newPosition = { x: 0, y: 0 };
+        this.newSize = 0;
         this.playerElement = [];
-       
+        //this.playerGrowth = [{ x: this.position.x, y: this.position.y }];
+
         this.createPlayerElement();
     }
 
@@ -33,31 +36,82 @@ class Player {
         this.playerElement = playerElement;
     }
 
+    
+
     movePlayer() {
         this.position[0].x += this.newPosition.x;
         this.position[0].y += this.newPosition.y;
 
-        this.playerElement.style.gridColumnStart = this.position[0].x;
-        this.playerElement.style.gridRowStart = this.position[0].y;
-
-        this.checkCollision();
+        for (let i = this.position.length - 2; i >= 0; i--) {
+            this.position[i + 1] = { x: this.position[i].x, y: this.position[i].y };
         }
-
+        
+        if (this.newSize > 0) {
+            const last = this.position[this.position.length - 1];
+            this.position.push({ x: last.x, y: last.y }); 
+            this.newSize--;
+        }
     
+        this.updatePlayerDOM();
+        this.checkCollision();
+    }
+        
+        /*this.playerElement.style.gridColumnStart = this.position[0].x;
+        this.playerElement.style.gridRowStart = this.position[0].y;*/
+    
+    updatePlayerDOM () {
+
+        document.querySelectorAll(".player").forEach(element => element.remove());
+
+        this.position.forEach((segment) => {
+            const playerElement = document.createElement("div");
+            playerElement.className = "player";
+            playerElement.style.gridColumnStart = segment.x;
+            playerElement.style.gridRowStart = segment.y;
+            this.board.appendChild(playerElement);
+        });
+    }
+
+    /*updatePosition() {
+        const last = this.position[this.position.length - 1];
+        this.position.push({ x: last.x, y: last.y });
+    }*/
+
+    growth(amount) {
+        this.newSize += amount;
+
+        const last = this.position[this.position.length - 1];
+        this.position.push({ x: last.x, y: last.y });
+
+        this.updatePlayerDOM();
+    }
+
+    /*changePosition() {
+        const oldPosition = this.position[this.position.length - 1]
+        for (let i = 0; i < this.newSize; i++) {
+            this.position.push({ x: oldPosition.x, y: oldPosition.y })
+        }
+        this.newSize = 0;
+    }*/
+
+
     checkCollision() {
         const foodElementIndex = foodArr.findIndex((element) => {
-            return  element.position[0].x === this.position[0].x &&
-                    element.position[0].y === this.position[0].y; 
+            return element.position[0].x === this.position[0].x &&
+                element.position[0].y === this.position[0].y;
         });
+
         if (foodElementIndex !== -1) {
             foodArr[foodElementIndex].domElementFood.remove();
             foodArr.splice(foodElementIndex, 1);
             this.speed++;
+            pointsCounter = pointsCounter + 3;
+            this.growth(1);
         }
 
         const pointsElementIndex = pointsArr.findIndex((element) => {
-            return  element.position[0].x === this.position[0].x &&
-                    element.position[0].y === this.position[0].y; 
+            return element.position[0].x === this.position[0].x &&
+                element.position[0].y === this.position[0].y;
         });
         if (pointsElementIndex !== -1) {
             pointsArr[pointsElementIndex].domElementPoints.remove();
@@ -67,8 +121,8 @@ class Player {
         }
 
         const obstacleElementIndex = obstacleArr.findIndex((element) => {
-            return  element.position[0].x === this.position[0].x &&
-                    element.position[0].y === this.position[0].y; 
+            return element.position[0].x === this.position[0].x &&
+                element.position[0].y === this.position[0].y;
         });
         if (obstacleElementIndex !== -1) {
             obstacleArr[obstacleElementIndex].domElementObstacle.remove();
@@ -116,9 +170,9 @@ document.addEventListener('keydown', (e) => {
 
 class Food {
     constructor() {
-        this.position = [{ x: Math.floor(Math.random() * (grid -1) +1), y: Math.floor(Math.random() * (grid -1) +1) }]
+        this.position = [{ x: Math.floor(Math.random() * (grid - 1) + 1), y: Math.floor(Math.random() * (grid - 1) + 1) }]
 
-        this.createFoodElement(); 
+        this.createFoodElement();
     }
 
     createFoodElement() {
@@ -157,9 +211,9 @@ createFoodAtRandom();
 
 class Points {
     constructor() {
-        this.position = [{ x: Math.floor(Math.random() * (grid -1) +1), y: Math.floor(Math.random() * (grid -1) +1) }]
+        this.position = [{ x: Math.floor(Math.random() * (grid - 1) + 1), y: Math.floor(Math.random() * (grid - 1) + 1) }]
 
-        this.createPointsElement(); 
+        this.createPointsElement();
     }
 
     createPointsElement() {
@@ -179,11 +233,9 @@ const pointsIndex = [];
 
 function createPointsAtRandom() {
 
-    // generate new food
     const points = new Points();
     pointsArr.push(points);
 
-    // keep generating new foods
     let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
     setTimeout(createPointsAtRandom, randomDelay);
 }
@@ -208,9 +260,9 @@ function updatePointsDisplay() {
 
 class Obstacle {
     constructor() {
-        this.position = [{ x: Math.floor(Math.random() * (grid -1) +1), y: Math.floor(Math.random() * (grid -1) +1) }]
+        this.position = [{ x: Math.floor(Math.random() * (grid - 1) + 1), y: Math.floor(Math.random() * (grid - 1) + 1) }]
 
-        this.createObstacleElement(); 
+        this.createObstacleElement();
     }
 
     createObstacleElement() {
@@ -244,7 +296,7 @@ function createObstacleAtRandom() {
 
 function outOfLives() {
     if (livesCounter === 0) {
-    return gameOver = true;
+        return gameOver = true;
     }
 }
 
@@ -290,7 +342,7 @@ function gameEnd() {
     if (player.position[0].x < 1 || player.position[0].x > grid ||
         player.position[0].y < 1 || player.position[0].y > grid
     )
-    return gameOver = true;
+        return gameOver = true;
 }
 
 let lastRender = 0;
@@ -302,7 +354,7 @@ function gameLoop(currentTime) {
         }
         return
     }
-    
+
     window.requestAnimationFrame(gameLoop);
     const sinceLastRender = (currentTime - lastRender) / 1000;
     if (sinceLastRender < 1 / player.speed) return;
