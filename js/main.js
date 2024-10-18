@@ -1,6 +1,9 @@
 const grid = 24;
 const board = document.getElementById("board");
 const score = document.getElementById("score");
+const domElementFood = document.getElementsByClassName("food")[0];
+const domElementObstacle = document.getElementsByClassName("obstacle")[0];
+const domElementPoints = document.getElementsByClassName("points")[0];
 const startButton = document.getElementById("btn");
 //const endOfGame = document.getElementById("end");
 let gameOver = false;
@@ -38,8 +41,7 @@ class Player {
         this.playerElement = playerElement;
     }
 
-
-
+    
     movePlayer() {
         this.position[0].x += this.newPosition.x;
         this.position[0].y += this.newPosition.y;
@@ -104,7 +106,9 @@ class Player {
         });
 
         if (foodElementIndex !== -1) {
-            foodArr[foodElementIndex].domElementFood.remove();
+            if (foodArr[foodElementIndex].domElementFood) {
+                foodArr[foodElementIndex].domElementFood.remove()
+            };
             foodArr.splice(foodElementIndex, 1);
             this.speed++;
             speedCounter++;
@@ -119,7 +123,9 @@ class Player {
                 element.position[0].y === this.position[0].y;
         });
         if (pointsElementIndex !== -1) {
-            pointsArr[pointsElementIndex].domElementPoints.remove();
+            if (pointsArr[pointsElementIndex].domElementPoints) {
+                pointsArr[pointsElementIndex].domElementPoints.remove()
+            };
             pointsArr.splice(pointsElementIndex, 1);
             pointsCounter = pointsCounter + 5;
             updatePointsDisplay();
@@ -130,7 +136,9 @@ class Player {
                 element.position[0].y === this.position[0].y;
         });
         if (obstacleElementIndex !== -1) {
-            obstacleArr[obstacleElementIndex].domElementObstacle.remove();
+            if (obstacleArr[obstacleElementIndex].domElementObstacle) {
+                obstacleArr[obstacleElementIndex].domElementObstacle.remove()
+            };
             obstacleArr.splice(obstacleElementIndex, 1);
             livesCounter--;
             updateLivesDisplay();
@@ -185,14 +193,8 @@ class Food {
     }
 
     createFoodElement() {
-        this.domElementFood = document.createElement("div");
-
-        this.domElementFood.className = "food";
-        this.domElementFood.style.gridColumnStart = this.position[0].x;
-        this.domElementFood.style.gridRowStart = this.position[0].y;
-
-        this.board = document.getElementById("board");
-        this.board.appendChild(this.domElementFood);
+    domElementFood.style.gridColumnStart = this.position[0].x;
+    domElementFood.style.gridRowStart = this.position[0].y;
     }
 }
 
@@ -206,11 +208,9 @@ function createFoodAtRandom() {
         return;
     }
 
-    // generate new food
     const food = new Food();
-    foodArr.push(food);
+    foodArr.unshift(food);
 
-    // keep generating new foods
     let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
     setTimeout(createFoodAtRandom, randomDelay);
 }
@@ -241,14 +241,8 @@ class Points {
     }
 
     createPointsElement() {
-        this.domElementPoints = document.createElement("div");
-
-        this.domElementPoints.className = "points";
-        this.domElementPoints.style.gridColumnStart = this.position[0].x;
-        this.domElementPoints.style.gridRowStart = this.position[0].y;
-
-        this.board = document.getElementById("board");
-        this.board.appendChild(this.domElementPoints);
+        domElementPoints.style.gridColumnStart = this.position[0].x;
+        domElementPoints.style.gridRowStart = this.position[0].y;
     }
 }
 
@@ -261,7 +255,7 @@ function createPointsAtRandom() {
     }
 
     const points = new Points();
-    pointsArr.push(points);
+    pointsArr.unshift(points);
 
     let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
     setTimeout(createPointsAtRandom, randomDelay);
@@ -292,14 +286,8 @@ class Obstacle {
     }
 
     createObstacleElement() {
-        this.domElementObstacle = document.createElement("div");
-
-        this.domElementObstacle.className = "obstacle";
-        this.domElementObstacle.style.gridColumnStart = this.position[0].x;
-        this.domElementObstacle.style.gridRowStart = this.position[0].y;
-
-        this.board = document.getElementById("board");
-        this.board.appendChild(this.domElementObstacle);
+        domElementObstacle.style.gridColumnStart = this.position[0].x;
+        domElementObstacle.style.gridRowStart = this.position[0].y;
     }
 }
 
@@ -314,7 +302,7 @@ function createObstacleAtRandom() {
     }
 
     const obstacle = new Obstacle();
-    obstacleArr.push(obstacle);
+    obstacleArr.unshift(obstacle);
 
 
     let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
