@@ -5,7 +5,7 @@ const startButton = document.getElementById("btn");
 let gameOver = false;
 let pointsCounter = 0;
 let livesCounter = 5;
-let speedCounter = this.speed;
+let speedCounter = 2;
 
 
 ////////////////////////////////////PLAYER//////////////////////////////////
@@ -105,8 +105,11 @@ class Player {
             foodArr[foodElementIndex].domElementFood.remove();
             foodArr.splice(foodElementIndex, 1);
             this.speed++;
+            speedCounter++;
             pointsCounter = pointsCounter + 3;
             this.growth(1);
+            updateSpeedDisplay();
+            updatePointsDisplay();
         }
 
         const pointsElementIndex = pointsArr.findIndex((element) => {
@@ -205,6 +208,18 @@ function createFoodAtRandom() {
 
 createFoodAtRandom();
 
+const speedDisplay = document.createElement("div");
+speedDisplay.id = "speedDisplay";
+speedDisplay.innerHTML = `
+<p>Current Speed: ${speedCounter}</p>
+`
+
+score.appendChild(speedDisplay);
+
+function updateSpeedDisplay() {
+    speedDisplay.innerHTML = `<p>Current Speed: ${speedCounter}</p>`;
+}
+
 
 ////////////////////////////////////POINTS//////////////////////////////////
 
@@ -239,7 +254,6 @@ function createPointsAtRandom() {
     let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
     setTimeout(createPointsAtRandom, randomDelay);
 }
-
 
 createPointsAtRandom();
 
