@@ -2,10 +2,12 @@ const grid = 24;
 const board = document.getElementById("board");
 const score = document.getElementById("score");
 const startButton = document.getElementById("btn");
+//const endOfGame = document.getElementById("end");
 let gameOver = false;
 let pointsCounter = 0;
 let livesCounter = 5;
 let speedCounter = 2;
+//endOfGame.style.display = "none";
 
 
 ////////////////////////////////////PLAYER//////////////////////////////////
@@ -36,7 +38,7 @@ class Player {
         this.playerElement = playerElement;
     }
 
-    
+
 
     movePlayer() {
         this.position[0].x += this.newPosition.x;
@@ -45,21 +47,21 @@ class Player {
         for (let i = this.position.length - 2; i >= 0; i--) {
             this.position[i + 1] = { x: this.position[i].x, y: this.position[i].y };
         }
-        
+
         if (this.newSize > 0) {
             const last = this.position[this.position.length - 1];
-            this.position.push({ x: last.x, y: last.y }); 
+            this.position.push({ x: last.x, y: last.y });
             this.newSize--;
         }
-    
+
         this.updatePlayerDOM();
         this.checkCollision();
     }
-        
-        /*this.playerElement.style.gridColumnStart = this.position[0].x;
-        this.playerElement.style.gridRowStart = this.position[0].y;*/
-    
-    updatePlayerDOM () {
+
+    /*this.playerElement.style.gridColumnStart = this.position[0].x;
+    this.playerElement.style.gridRowStart = this.position[0].y;*/
+
+    updatePlayerDOM() {
 
         document.querySelectorAll(".player").forEach(element => element.remove());
 
@@ -143,6 +145,7 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowLeft') {
         player.newPosition = { x: -1, y: 0 };
         removeStartButton();
+        //removeEndDisplay();
     }
 })
 
@@ -150,6 +153,7 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowRight') {
         player.newPosition = { x: 1, y: 0 };
         removeStartButton();
+        //removeEndDisplay();
     }
 })
 
@@ -157,6 +161,7 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowUp') {
         player.newPosition = { x: 0, y: -1 };
         removeStartButton();
+        //removeEndDisplay();
     }
 })
 
@@ -164,6 +169,7 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowDown') {
         player.newPosition = { x: 0, y: 1 };
         removeStartButton();
+        //removeEndDisplay();
     }
 })
 
@@ -196,6 +202,9 @@ const foodIndex = [];
 
 
 function createFoodAtRandom() {
+    if (gameOver) {
+        return;
+    }
 
     // generate new food
     const food = new Food();
@@ -247,6 +256,9 @@ const pointsArr = [];
 const pointsIndex = [];
 
 function createPointsAtRandom() {
+    if (gameOver) {
+        return;
+    }
 
     const points = new Points();
     pointsArr.push(points);
@@ -297,12 +309,14 @@ const obstacleIndex = [];
 
 
 function createObstacleAtRandom() {
+    if (gameOver) {
+        return;
+    }
 
-    // generate new food
     const obstacle = new Obstacle();
     obstacleArr.push(obstacle);
 
-    // keep generating new foods
+
     let randomDelay = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
     setTimeout(createObstacleAtRandom, randomDelay);
 }
@@ -333,16 +347,8 @@ function updateLivesDisplay() {
 ////////////////////////////////////GAME//////////////////////////////////
 
 
-/*function restart(){
-    
-    
-}
 
-function displayEndView () {
-
-}
-
-const endView = document.createElement("div");
+/*const endView = document.createElement("div");
 endView.id = "endView";
 endView.innerHTML= `
 <p class="end">Your score was: ${pointsCounter}</p>
@@ -352,21 +358,32 @@ function removeStartButton() {
     startButton.remove();
 }
 
+/*function removeEndDisplay() {
+    endOfGame.remove();
+}*/
+
 function gameEnd() {
     if (player.position[0].x < 1 || player.position[0].x > grid ||
         player.position[0].y < 1 || player.position[0].y > grid
-    )
+    ) {
         return gameOver = true;
+    }
 }
+
 
 let lastRender = 0;
 
+
 function gameLoop(currentTime) {
     if (gameOver) {
+        startButton.style.display = "none";
+        //endOfGame.style.display = "block";
+        //endOfGame.style.visibility = "visible";
+
         if (confirm('You lost. Press OK to restart.')) {
             window.location = '/'
         }
-        return
+        return;
     }
 
     window.requestAnimationFrame(gameLoop);
@@ -381,6 +398,3 @@ function gameLoop(currentTime) {
 }
 
 window.requestAnimationFrame(gameLoop);
-
-
-

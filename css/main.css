@@ -63,10 +63,27 @@ p {
 #btn {
     font-family:  'Anta';font-size: 22px;
     font-size: 64;
+    text-align: center;
     z-index: 20;
     background-color: rgb(8, 8, 101);
     color: wheat;
     position: absolute;
+    border: 1px solid wheat;
+    border-radius: 10px;
+    box-shadow: 10px 5px 5px wheat;
+    padding: 20px;
+}
+
+#end {
+    font-family:  'Anta';font-size: 22px;
+    font-size: 64;
+    text-align: center;
+    z-index: 50;
+    background-color: rgb(8, 8, 101);
+    color: wheat;
+    position: absolute;
+    top: 45vh;
+    left: 32vw;
     border: 1px solid wheat;
     border-radius: 10px;
     box-shadow: 10px 5px 5px wheat;
@@ -103,20 +120,5 @@ p {
     z-index: 10;
 }
 
-#endView {
-    background-image: linear-gradient(45deg,
-            rgb(139, 231, 145),
-            rgb(83, 176, 89),
-            rgb(59, 152, 66),
-            rgb(39, 127, 45),
-            rgb(30, 110, 35),
-            rgb(10, 81, 14));
-    width: min(100vmin, 100vw);
-    height: min(100vmin, 100vh);
-    display: grid;
-    grid-template-columns: repeat(24, 1fr);
-    grid-template-rows: repeat(24, 1fr);
-    border: 1px solid darkred;
-    overflow: hidden;
-}
+
 
